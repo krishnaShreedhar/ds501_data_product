@@ -22,3 +22,6 @@ list_num_cols[1]
 sb_list_cities = unique(df_airbnb$city)
 sb_list_cities = c(sb_list_cities, c("all"))
 sb_list_cities
+
+library(shiny)
+shiny::runGitHub("shiny-examples", "rstudio", subdir = "001-hello")
