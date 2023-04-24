@@ -360,6 +360,66 @@ model_panel = tabPanel("Modelling",
                          
                        ))
 
+answers_panel = tabPanel("Description",
+                        
+                        fluidRow(column(tags$img(src="airbnb-logo.png", 
+                                                 width="400px", 
+                                                 height="300px"), 
+                                        width=4),
+                                 column(
+                                   br(),
+                                   p(strong("What data you collected?"),
+                                     br(),
+                                     "The dataset was downloaded from Kaggle.",
+                                     a(href = "https://www.kaggle.com/datasets/dipeshkhemani/airbnb-cleaned-europe-dataset", 
+                                       "Data Source: Kaggle - Airbnb Cleaned Europe Dataset, by Dipesh Khemani"),
+                                     br(),
+                                     "This data records the Airbnb rental prices in the European cities.", 
+                                     "The dataset downloaded from Kaggle.",
+                                     style="text-align:justify;color:black;background-color:lavender;padding:15px;border-radius:10px"),
+                                   br(),
+                                   
+                                   p(strong("Why this topic is interesting or important to you?"),
+                                     br(),
+                                   "Airbnb, Inc. is an American San Francisco-based company 
+                                   operating an online marketplace for short-term homestays 
+                                   and experiences. ",
+                                   "This dataset enables us to analyze the various factors affecting 
+                                   the variations in Airbnb housing prices.",
+                                   
+                                     style="text-align:justify;color:black;background-color:papayawhip;padding:15px;border-radius:10px"),
+                                   br(),
+                                   
+                                   p(strong("How did you analyze the data?"),
+                                     br(),
+                                     
+                                     "I analyzed the Normality hypothesis of the target variable. ",
+                                     "I visualized the data distributions for the Numerical Independent variables",
+                                     "Shortlisted important features and trained a Linear Regression model",
+                                     "We could also observe feature importances of various independent variables 
+                                     and thus shortlist or change our selected features based on the p-value significance.",
+                                     style="text-align:justify;color:black;background-color:lavender;padding:15px;border-radius:10px"),
+                                   br(),
+                                   
+                                   
+                                   p(strong("What did you find in the data?"),
+                                     br(),
+                                     "I found that amongst all the features: room capacity, cleanliness, and proximity to city center 
+                                     are the statistically significant features based on Linear Regression model summary.",
+                                     
+                                     style="text-align:justify;color:black;background-color:papayawhip;padding:15px;border-radius:10px"),
+                                   
+                                   width=8),
+                                 br()
+                        ),
+                        
+                        
+                        hr(),
+                        p(em("Developed by"),
+                          br("Shreedhar Kodate"),
+                          style="text-align:center; font-family: times")
+)
+
 
 # User Interface -----------------------------------------------------
 ui = fluidPage(theme = shinytheme("cerulean"),
@@ -372,6 +432,7 @@ ui = fluidPage(theme = shinytheme("cerulean"),
                  airbnb_table,
                  normality_panel,
                  visualization_panel,
-                 model_panel
+                 model_panel,
+                 answers_panel
                  )
 )
