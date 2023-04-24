@@ -1,0 +1,14 @@
+name: DS501_Airbnb_Prices_Europe_Data_Product
+title: DS501_Airbnb_Prices_Europe_Data_Product
+username:
+account: krishna-shreedhar
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8931567
+bundleId: 7126168
+url: https://krishna-shreedhar.shinyapps.io/DS501_Airbnb_Prices_Europe_Data_Product/
+when: 1682307346.11703
+lastSyncTime: 1682307346.11704
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data/characters.csv
