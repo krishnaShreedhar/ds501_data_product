@@ -56,6 +56,9 @@ features <- c("price",
               "dist_metro_km",
               "index_normalised_attraction",
               "index_normalised_restraunt")
+typeof(features[0])
+length(features)
+
 df_features <- df_airbnb[,features]
 
 attach(df_features)

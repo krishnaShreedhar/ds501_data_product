@@ -271,15 +271,11 @@ model_panel = tabPanel("Modelling",
                                        align="center"),
                                 column(
                                   p("Now we are going to build the final model, for this you will have to 
-                                     select the independent variables you want to include in the model
-                                     and especially select for which of them you want to include some non-linearity 
-                                     in the model (this is related to the power transformations made to the 
-                                     variables independent in a previous step)",
+                                     select the independent variables you want to include in the model.
+                                     ",
                                     style="color:black;text-align:justify"),
                                   br(),
-                                  p("In this step it is very important to achieve a high adjusted coefficient of 
-                                     determination and also to make the parameters of the model statistically significant, 
-                                     for that reason we are going to test the following hypothesis:",style="color:black;text-align:justify"),
+                                  p("We are going to test the following hypothesis for all the selected variables:",style="color:black;text-align:justify"),
                                   p('$$H_0: ~ \\beta_i = 0$$',
                                     style="color:black;border:1px solid black;background-color:white"),
                                   width=8,
@@ -346,7 +342,7 @@ model_panel = tabPanel("Modelling",
                                       uiOutput("significance"),
                                       br(),
                                       uiOutput("Determinacionfinal"),
-                                      textOutput("txt"),
+                                      # textOutput("txt"),
                                       width = 8)
                                     ),
                            hr()

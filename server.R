@@ -8,6 +8,7 @@ library(nortest)
 library(tseries)
 library(RcmdrMisc)
 library(lmtest)
+library(stringr)
 
 
 # Load data
@@ -302,14 +303,18 @@ server = function(input, output) {
   })
   
   output$txt <- renderText({
+    v_c = c(input$include_features)
     icons <- paste(input$include_features, collapse = ", ")
-    paste("You chose", icons)
+    pat = "room_capacity_persons"
+    ans = str_detect(v_c, pat)
+    paste("You chose ", ans, icons )
   })
   
   
   selecciondevariables <- reactive({
     
-    features <- c("price",
+    v_c = c(input$include_features)
+    feature_cols <- c("price",
                   "room_capacity_persons",
                   "rating_cleanliness",
                   "rating_guest_satisfaction",
@@ -317,6 +322,18 @@ server = function(input, output) {
                   "dist_metro_km",
                   "index_normalised_attraction",
                   "index_normalised_restraunt")
+    
+    if (length(input$include_features) > 0){
+      features = c("price")
+      for(pat in feature_cols){
+        if(pat %in% v_c){
+          features = c(features, pat)
+        }
+      }
+    }
+    else{
+      features <- feature_cols
+    }
     
     df_features <- df_airbnb[,features]
     
