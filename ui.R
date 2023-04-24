@@ -255,6 +255,116 @@ visualization_panel = tabPanel(
   )
 )
 
+
+model_panel = tabPanel("Modelling",
+                       
+                       fluidRow(column(width=2),
+                                column(
+                                  h4(p("Final model",
+                                       style="color:black;text-align:center")),
+                                  width=8,
+                                  style="background-color:lavender;border-radius: 10px")),
+                       br(),
+                       
+                       fluidRow(column(width=2, 
+                                       icon("hand-point-right","fa-5x"),
+                                       align="center"),
+                                column(
+                                  p("Now we are going to build the final model, for this you will have to 
+                                     select the independent variables you want to include in the model
+                                     and especially select for which of them you want to include some non-linearity 
+                                     in the model (this is related to the power transformations made to the 
+                                     variables independent in a previous step)",
+                                    style="color:black;text-align:justify"),
+                                  br(),
+                                  p("In this step it is very important to achieve a high adjusted coefficient of 
+                                     determination and also to make the parameters of the model statistically significant, 
+                                     for that reason we are going to test the following hypothesis:",style="color:black;text-align:justify"),
+                                  p('$$H_0: ~ \\beta_i = 0$$',
+                                    style="color:black;border:1px solid black;background-color:white"),
+                                  width=8,
+                                  style="background-color:lavender;border-radius: 10px")),
+                       br(),
+                       fluidRow(column(width=2),
+                                column(
+                                  p("Let's build our regression model",
+                                    style="color:black; text-align:center"),
+                                  width = 8,
+                                  style="background-color:papayawhip; border-radius: 10px"
+                                )),
+                       hr(),
+                       sidebarLayout(
+                         
+                         sidebarPanel(
+                           
+                           
+                           fluidRow(column(
+                             checkboxGroupInput("include_features",
+                                                p("Select the independent variables you would like to include:",
+                                                  style="color:coral;text-align:justify"),
+                                                choiceNames =
+                                                  list("room_capacity_persons",
+                                                       "rating_cleanliness",
+                                                       "rating_guest_satisfaction",
+                                                       "dist_city_center_km",
+                                                       "dist_metro_km",
+                                                       "index_normalised_attraction",
+                                                       "index_normalised_restraunt"),
+                                                choiceValues =
+                                                  list("room_capacity_persons",
+                                                       "rating_cleanliness",
+                                                       "rating_guest_satisfaction",
+                                                       "dist_city_center_km",
+                                                       "dist_metro_km",
+                                                       "index_normalised_attraction",
+                                                       "index_normalised_restraunt")
+                                                ),
+                             width = 6)
+                             
+                             ),
+                           br(),
+                           uiOutput("Anothermessage"),
+                           br()
+                           
+                           
+                         ),
+                         mainPanel(
+                           
+                           h3(p(strong('Model summary',
+                                       style="color:salmon")),
+                              align="center"),
+                           uiOutput("selected"),
+                           
+                           tags$head(tags$style("#model_summ{height: 400px;width:auto;border: 1px solid black; background-color: lavender}")),
+                           
+                           tags$head(tags$style("#ModeloBack{height: 400px;width:auto;border: 1px solid black; background-color: lavender}")),
+                           
+                           fluidRow(column(verbatimTextOutput("model_summ"),
+                                           width = 12),
+
+                                    column(
+                                      uiOutput("significance"),
+                                      br(),
+                                      uiOutput("Determinacionfinal"),
+                                      textOutput("txt"),
+                                      width = 8)
+                                    ),
+                           hr()
+                           # ,
+                           # h3(p(strong('Final model',
+                           #             style="color:salmon")),
+                           #    align="center"),
+                           # fluidRow(column(verbatimTextOutput("ModeloBack"),
+                           #                 width=8),
+                           #          column(uiOutput("Determinacionfinal"),
+                           #                 width=4))
+                           
+                           
+                         )
+                         
+                       ))
+
+
 # User Interface -----------------------------------------------------
 ui = fluidPage(theme = shinytheme("cerulean"),
                
@@ -266,6 +376,6 @@ ui = fluidPage(theme = shinytheme("cerulean"),
                  airbnb_table,
                  normality_panel,
                  visualization_panel,
-                 algo_panel
+                 model_panel
                  )
 )

@@ -28,6 +28,8 @@ TARGET_COL = "price"
 # Server code-------------------------------------------------------
 
 server = function(input, output) {
+  
+  # Visualization code ------------------------------------------------------------
   output$plot <- renderPlot({
     p = ggplot(df_airbnb,
                aes(x = df_airbnb[, input$f_num])) +
@@ -45,6 +47,7 @@ server = function(input, output) {
  
   })
   
+  # Raw table code ------------------------------------------------------------
   output$RawData <- DT::renderDataTable(
     DT::datatable({
       df_airbnb
@@ -63,6 +66,8 @@ server = function(input, output) {
     rownames = FALSE,
     colnames = v_cols
     ))
+  
+  # Normality code ------------------------------------------------------------
   
   var_transform <- reactive({
     
@@ -87,25 +92,25 @@ server = function(input, output) {
     
   })
   
-  var_transform2 <- reactive({
-    
-    attach(datos)
-    if(input$power_transform == 0){
-      log_target = log(list_target)
-    }
-    else{
-      log_target = list_target ^ as.double(input$power_transform)
-    }
-    
-    if(input$power_transform == 1){
-      title = TARGET_COL
-    }
-    else{
-      title = paste("Log Transformed ", TARGET_COL)
-    }
-    
-    log_target
-  })
+  # var_transform2 <- reactive({
+  #   
+  #   attach(datos)
+  #   if(input$power_transform == 0){
+  #     log_target = log(list_target)
+  #   }
+  #   else{
+  #     log_target = list_target ^ as.double(input$power_transform)
+  #   }
+  #   
+  #   if(input$power_transform == 1){
+  #     title = TARGET_COL
+  #   }
+  #   else{
+  #     title = paste("Log Transformed ", TARGET_COL)
+  #   }
+  #   
+  #   log_target
+  # })
   
   output$hist_target <- renderPlot({
     
@@ -286,5 +291,67 @@ server = function(input, output) {
     More
     
   })
+  
+  # Modelling code --------------
+  
+  selected <- reactive({
+      vars = input$include_features
+      sort(vars,decreasing = F)
+      xnames2 <- paste0(colnames(todasvariables2[as.double(vars)]))
+      vars
+  })
+  
+  output$txt <- renderText({
+    icons <- paste(input$include_features, collapse = ", ")
+    paste("You chose", icons)
+  })
+  
+  
+  selecciondevariables <- reactive({
+    
+    features <- c("price",
+                  "room_capacity_persons",
+                  "rating_cleanliness",
+                  "rating_guest_satisfaction",
+                  "dist_city_center_km",
+                  "dist_metro_km",
+                  "index_normalised_attraction",
+                  "index_normalised_restraunt")
+    
+    df_features <- df_airbnb[,features]
+    
+    Model3 <- lm(price ~ ., data=df_features)
+    
+    Model3
+    
+  })
+
+  
+  output$Determinacionfinal <- renderUI({
+    
+    coeficiente = summary(selecciondevariables())$adj.r.squared
+    p(paste("With the final model you built, you get an adjusted square R of:",
+            coeficiente),
+      style="padding:25px;background-color:papayawhip;border-left:8px solid coral;border-top: 1px solid black;border-right:1px solid black;border-bottom: 1px solid black;color:black;text-align:center" )
+    
+  })
+  
+  
+  output$model_summ <- renderPrint({
+    
+    summary(selecciondevariables())
+    
+  })
+  
+  
+  output$Anothermessage <- renderUI({
+    
+    p("Those variables whose betas are not significant should be eliminated from the model, 
+      try to get them out one by one prioritizing those whose betas have a higher p-value (Pr(>|t|))",
+      style="padding:25px;background-color:papayawhip;border-left:8px solid coral;border-top: 1px solid black;border-right:1px solid black;border-bottom: 1px solid black;color:black;text-align:center")
+    
+    
+  })
+  
   
 }

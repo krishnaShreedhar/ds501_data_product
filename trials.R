@@ -1,6 +1,8 @@
 
 df_airbnb = read.csv("data/airbnb_europe_cities.csv")
 
+names(df_airbnb)
+
 TARGET_COL = "price"
 list_target = df_airbnb[, TARGET_COL]
 typeof(list_target)
@@ -41,3 +43,32 @@ sb_list_cities
 
 library(shiny)
 shiny::runGitHub("shiny-examples", "rstudio", subdir = "001-hello")
+
+
+
+
+# -------------------------------
+features <- c("price",
+  "room_capacity_persons",
+              "rating_cleanliness",
+              "rating_guest_satisfaction",
+              "dist_city_center_km",
+              "dist_metro_km",
+              "index_normalised_attraction",
+              "index_normalised_restraunt")
+df_features <- df_airbnb[,features]
+
+attach(df_features)
+
+todasvariables2 <- df_airbnb[,features]
+
+
+TARGET_COL = "price"
+list_target = df_airbnb[, TARGET_COL]
+
+xnames2 = paste0(colnames(df_features[as.double(features)]))
+
+fmla3 <- as.formula(paste(deparse(list_target), "~",paste(xnames2, collapse = " + ")))
+
+Model3 <- lm(price ~ ., data=df_features)
+summary(Model3)
