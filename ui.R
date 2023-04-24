@@ -170,10 +170,16 @@ intro_panel = tabPanel(
   icon("home"),
   
   titlePanel("Airbnb prices in the European cities"),
-  
-  img(src = "london_tower_bridge.jpg", 
-      height = 600, 
-      width = 1000),
+  fluidRow(
+           column(tags$img(src = "london_tower_bridge.jpg", 
+                           height = "450px", 
+                           width = "670px"), 
+                  width=8),
+           column(tags$img(src="airbnb-logo.png", 
+                           width="300px", 
+                           height="223px"), 
+                  width=4)
+  ),
   
   br(), 
   br(),
@@ -375,29 +381,124 @@ answers_panel = tabPanel("Description",
                                        "Data Source: Kaggle - Airbnb Cleaned Europe Dataset, by Dipesh Khemani"),
                                      br(),
                                      "This data records the Airbnb rental prices in the European cities.", 
-                                     "The dataset downloaded from Kaggle.",
+                                     br(),
+                                     br(),
+                                     "This dataset consists of 18 features and the target variable, price column. 
+                                     There are about 41K data instances and a file size of 8.2MB.", 
+                                     
+                                     br(),
+                                     br(),
+                                     "Following are the column distributions:",
+                                     
+                                     br(),
+                                     br(),
+                                     "1. TARGET column: ",
+                                     br(),
+                                     "    1.1. price: value of the Airbnb per day in USD.",
+                                     
+                                     br(),
+                                     br(),
+                                     "2. CATEGORICAL columns: ",
+                                     br(),
+                                     "    2.1. city: name of the city where the room is located.",
+                                     br(),
+                                     "    2.2. day: Whether it is a weekday of weekend when the price is recorded.",
+                                     br(),
+                                     "    2.3. room_type: Private/Shared/Entire apartment.",
+                                     br(),
+                                     "    2.4. is_shared_room: Whether the room is shared with other guests.",
+                                     br(),
+                                     "    2.5. is_private_room: Whether the room has private amenities.",
+                                     br(),
+                                     "    2.6. is_business: Whether the room is owned by another real-estate business",
+                                     br(),
+                                     "    2.7. is_superhost: Is the property under the care of a Superb host? ",
+                                     br(),
+                                     "    2.8. has_multiple_rooms: Does the property have multiple rooms.",
+                  
+                                     
+                                     br(),
+                                     br(),
+                                     "3. NUMERICAL columns: ",
+                                     br(),
+                                     "    3.1. room_capacity_persons",
+                                     br(),
+                                     "    3.2. rating_cleanliness",
+                                     br(),
+                                     "    3.3. rating_guest_satisfaction",
+                                     br(),
+                                     "    3.4. dist_city_center_km",
+                                     br(),
+                                     "    3.5. num_bedrooms",
+                                     br(),
+                                     "    3.6. dist_city_center_km",
+                                     br(),
+                                     "    3.7. dist_metro_km",
+                                     br(),
+                                     "    3.8. index_attraction",
+                                     br(),
+                                     "    3.9. index_normalised_attraction",
+                                     br(),
+                                     "    3.10. index_restraunt",
+                                     br(),
+                                     "    3.11. index_normalised_restraunt",
+                                     
+                                     br(),
+                                     br(),
                                      style="text-align:justify;color:black;background-color:lavender;padding:15px;border-radius:10px"),
                                    br(),
                                    
                                    p(strong("Why this topic is interesting or important to you?"),
+                                       br(),
+                                       "This topic is interesting due to multiple reasons. 
+                                       Before that, a short intro of the Airbnb business:
+                                       Airbnb, Inc. is an American San Francisco-based company 
+                                       operating an online marketplace for short-term homestays 
+                                       and experiences. ",
                                      br(),
-                                   "Airbnb, Inc. is an American San Francisco-based company 
-                                   operating an online marketplace for short-term homestays 
-                                   and experiences. ",
-                                   "This dataset enables us to analyze the various factors affecting 
-                                   the variations in Airbnb housing prices.",
-                                   
-                                     style="text-align:justify;color:black;background-color:papayawhip;padding:15px;border-radius:10px"),
+                                     br(),
+                                       "Following are the multiple reasons for choosing this dataset:",
+                                     br(),
+                                     br(),
+                                     "1. Airbnb is a very good option for short-term stays. 
+                                     However, it's difficult to understand the patterns for prices.
+                                     This dataset enables us to analyze the various factors affecting 
+                                     the variations in Airbnb housing prices.",
+                                     
+                                     br(),
+                                     br(),
+                                     "2. Tourism business ideas can benefit a lot from such kind data analysis and modeling.
+                                      The home owners could understand if their house is a potential candidate for Airbnb business.",
+                                     
+                                     br(),
+                                     br(),
+                                     
+                                       style="text-align:justify;color:black;background-color:papayawhip;padding:15px;border-radius:10px"
+                                     ),
                                    br(),
                                    
                                    p(strong("How did you analyze the data?"),
                                      br(),
-                                     
-                                     "I analyzed the Normality hypothesis of the target variable. ",
-                                     "I visualized the data distributions for the Numerical Independent variables",
-                                     "Shortlisted important features and trained a Linear Regression model",
-                                     "We could also observe feature importances of various independent variables 
+                                     "I followed the Data Science Lifecycle to complete the project.
+                                     Further, to avoid some outliers, I limited the price to be less than or equals to $1000.",
+                                     br(),
+                                     br(),
+                                     "1. I visualized the target variable ", strong("price")," to understand the distribution. 
+                                     I also followed a tutorial to analyze the Normality hypothesis of the target variable. 
+                                     The price variable does not follow Normal distribution. 
+                                     In fact it has a right-skewed tail due to expensive prices for some high-end Airbnb properties.",
+                                     br(),
+                                     br(),
+                                     "2. I visualized the data distributions for the Numerical Independent variables",
+                                     br(),
+                                     br(),
+                                     "3. Shortlisted important features and trained a Linear Regression model",
+                                     br(),
+                                     br(),
+                                     "4. After modelling, we could also observe feature importances of various independent variables 
                                      and thus shortlist or change our selected features based on the p-value significance.",
+                                     br(),
+                                     br(),
                                      style="text-align:justify;color:black;background-color:lavender;padding:15px;border-radius:10px"),
                                    br(),
                                    
@@ -406,6 +507,22 @@ answers_panel = tabPanel("Description",
                                      br(),
                                      "I found that amongst all the features: room capacity, cleanliness, and proximity to city center 
                                      are the statistically significant features based on Linear Regression model summary.",
+                                     br(),
+                                     br(),
+                                     "Following are the multiple observations regarding this dataset:",
+                                     br(),
+                                     br(),
+                                     "1. The mean value of prices is: ", 
+                                     strong("$250 per day"), 
+                                     " while most of the Airbnb houses have prices in the range $90-125. 
+                                               This is almost 50% of the actual mean.",
+                                     br(),
+                                     br(),
+                                     "2. Tourism business ideas can benefit a lot from such kind data analysis and modeling.
+                                     The home owners could understand if their house is a potential candidate for Airbnb business.",
+                                     
+                                     br(),
+                                     br(),
                                      
                                      style="text-align:justify;color:black;background-color:papayawhip;padding:15px;border-radius:10px"),
                                    
