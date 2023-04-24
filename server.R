@@ -22,6 +22,8 @@ v_cols = names(df_airbnb)
 list_cities = unique(df_airbnb$city)
 list_cities = c(list_cities, c("all"))
 
+TARGET_COL = "price"
+
 
 # Server code-------------------------------------------------------
 
@@ -61,5 +63,228 @@ server = function(input, output) {
     rownames = FALSE,
     colnames = v_cols
     ))
+  
+  var_transform <- reactive({
+    
+    list_target = df_airbnb[, TARGET_COL]
+    
+    if(input$power_transform == 0){
+      log_target = log(list_target)
+    }
+    else {
+      log_target = list_target ^ as.double(input$power_transform)
+    }
+    
+    if(input$power_transform == 1){
+      title = TARGET_COL
+    }
+    else{
+      title = paste("Log Transformed ", TARGET_COL)
+    }
+    
+    Resultado <- cbind(log_target, title)
+    
+    
+  })
+  
+  var_transform2 <- reactive({
+    
+    attach(datos)
+    if(input$power_transform == 0){
+      log_target = log(list_target)
+    }
+    else{
+      log_target = list_target ^ as.double(input$power_transform)
+    }
+    
+    if(input$power_transform == 1){
+      title = TARGET_COL
+    }
+    else{
+      title = paste("Log Transformed ", TARGET_COL)
+    }
+    
+    log_target
+  })
+  
+  output$hist_target <- renderPlot({
+    
+    ggplot(NULL,aes(as.double(var_transform()[,1])))+geom_histogram(bins=nclass.Sturges(as.double(var_transform()[,1])),color="white",
+                                                                    fill="seagreen1",aes(y=..density..),lwd=0.8)+geom_density(color="seagreen4",
+                                                                                                                              alpha=0.3,fill="seagreen4",lty=1)+
+      labs(title = paste(var_transform()[1,2], "\n histogram"),x=var_transform()[1,2],y="Density")+
+      theme(plot.title = element_text(color="navy", size=15, face="bold.italic",hjust=0.5),
+            axis.title.x = element_text(color="navy", size=13, face="bold"),
+            axis.title.y = element_text(color="navy", size=13, face="bold"))
+    
+    
+  })
+  
+  output$box_target <- renderPlot({
+    
+    ggplot(NULL,aes(x=0,y=as.double(var_transform()[,1])))+geom_boxplot(color="black",fill="skyblue",alpha=0.5)+ stat_summary(fun.y=mean, colour="darkred", geom="point",shape=18, size=3)+
+      labs(title = paste(var_transform()[1,2], "\n box_target"),x="",y=var_transform()[1,2])+
+      theme(plot.title = element_text(color="navy", size=15, face="bold.italic",hjust=0.5),
+            axis.title.x = element_text(),
+            axis.text.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.title.y = element_text(color="navy", size=13, face="bold"))
+    
+    
+  })
+  
+  output$qqp_target <- renderPlot({
+    
+    par(font.main=4,font.lab=2,col.main="navy",col.lab="navy",cex.lab=1.1)
+    qqPlot(as.double(var_transform()[,1]),grid=F,xlab="",ylab="")
+    u <-par("usr")
+    rect(u[1], u[3], u[2], u[4], col="#EBE9E9", border=TRUE)
+    grid(NULL,NULL,col="white",lty=1)
+    par(new=TRUE)
+    qqPlot(as.double(var_transform()[,1]),col="coral",pch=16,id=T,lwd=1.9,col.lines = "black",grid = F, main = paste(var_transform()[1,2], "\n Q-Q plot"),xlab="Normal quantiles",ylab=var_transform()[1,2])
+    box(col="white")
+    
+    
+  })
+  
+  do_analytics_test <- reactive({
+    
+    if(input$name_analytics_test == 1){
+      # Shapiro fails if number of samples exceed 5000
+      ana_test_results <- shapiro.test(as.double(var_transform()[,1][seq_along(remove) %% 2 > 0][1:5000]))
+      
+    }
+    else
+    {
+      
+      if(input$name_analytics_test ==2){
+        
+        ana_test_results <- ad.test(as.double(var_transform()[,1]))
+        
+      }
+      else
+      {
+        
+        if(input$name_analytics_test == 3){
+          
+          ana_test_results <- cvm.test(as.double(var_transform()[,1]))
+          
+        }
+        else
+        {
+          
+          if(input$name_analytics_test == 4){
+            
+            ana_test_results <- lillie.test(as.double(var_transform()[,1]))
+            
+          }
+          else
+          {
+            
+            ana_test_results <- jarque.bera.test(as.double(var_transform()[,1]))
+            
+          }
+          
+        }
+        
+      }
+      
+      
+    }
+    
+    ana_test_results$data.name <- var_transform()[1,2]
+    ana_test_results
+    
+  })
+  
+  output$ana_test_results <- renderPrint({
+    
+    do_analytics_test()
+    
+  })
+  
+  output$norm_conclusion <- renderText({
+    
+    if(do_analytics_test()$p.value < 0.05){
+      mensaje = paste("We reject the NULL Hypothesis, the variable ", TARGET_COL," is not normally distributed")
+    }
+    else{
+      mensaje = paste("We accept the NULL Hypothesis, the variable ", TARGET_COL," is normally distributed")
+    }
+    
+    mensaje
+    
+  })
+  
+  output$ReadMore <- renderUI({
+    
+    
+    if(input$name_analytics_test == 1){
+      
+      More <- p("Read more about this test here → ", 
+                a(href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test", 
+                  icon("wikipedia-w"),
+                  target="_blank"),
+                style="color:black;text-align:center")
+      
+    }
+    else
+    {
+      
+      if(input$name_analytics_test == 2){
+        
+        More <- p("Read more about this test here → ", 
+                  a(href="https://en.wikipedia.org/wiki/Anderson%E2%80%93Darling_test", 
+                    icon("wikipedia-w"),
+                    target="_blank"),
+                  style="color:black;text-align:center")
+        
+      }
+      else
+      {
+        
+        if(input$name_analytics_test == 3){
+          
+          More <- p("Read more about this test here → ", 
+                    a(href="https://en.wikipedia.org/wiki/Cram%C3%A9r%E2%80%93von_Mises_criterion", 
+                      icon("wikipedia-w"),
+                      target="_blank"),
+                    style="color:black;text-align:center")
+          
+        }
+        else
+        {
+          
+          if(input$name_analytics_test ==4){
+            
+            More <- p("Read more about this test here → ", 
+                      a(href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test", 
+                        icon("wikipedia-w"),
+                        target="_blank"),
+                      style="color:black;text-align:center")
+            
+            
+          }
+          else
+          {
+            
+            More <- p("Read more about this test here → ", 
+                      a(href="https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test", 
+                        icon("wikipedia-w"),
+                        target="_blank"),
+                      style="color:black;text-align:center")
+            
+            
+          }
+          
+        }
+        
+      }
+      
+    }
+    
+    More
+    
+  })
   
 }

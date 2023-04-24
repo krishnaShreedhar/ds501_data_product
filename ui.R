@@ -12,8 +12,10 @@ library(lmtest)
 # Load data
 df_airbnb = read.csv("data/airbnb_europe_cities.csv")
 
+TARGET_COL = "price"
+
 # Page 1 - Home - Show raw data -------------------------------------
-airbnb_table = tabPanel(icon("home"),
+airbnb_table = tabPanel("Dataset",
          
          fluidRow(column(tags$img(src="airbnb-logo.png", 
                                   width="400px", 
@@ -56,9 +58,116 @@ airbnb_table = tabPanel(icon("home"),
            style="text-align:center; font-family: times")
 )
 
+normality_panel = tabPanel("Normality tests",
+                           
+                           fluidRow(column(width=2),
+                                    column(
+                                      h4(p("Normality",style="color:black;text-align:center")),
+                                      width=8,style="background-color:lavender;border-radius: 10px")
+                           ),
+                           br(),
+                           fluidRow(column(width=2, icon("hand-point-right","fa-5x"),align="center"),
+                                    column(
+                                      p("In general, we might assume that the TARGET_COL is normally distributed. 
+                                      However, it is a good idea to establish whether the assumptions regarding distribution actually hold true.
+                                      Let's assume that the response (dependent/target) variable is normally distributed.
+                                        And, following this assumption, we will try to achieve this:",style="color:black;text-align:justify"),
+                                      withMathJax(),
+                                      p('$$H_0:~Y ~ \\sim ~ Normal( ~\\mu ~,~ \\sigma~ )$$',
+                                        style="color:black;border:1px solid black;background-color:white"),
+                                      p("In our case we will take as a response variable", strong(em(TARGET_COL)), "since this 
+                                      a value of our interest which might be useful to bear in mind the housing expenditures. ",
+                                        style="color:black;text-align:justify"),
+                                      width=8,
+                                      style="background-color:lavender;border-radius: 10px")
+                           ),
+                           br(),
+                           fluidRow(column(width=2),
+                                    column(
+                                      p("Let's do some graphical and analytical tests in order to conclude about the Normality hypothesis",
+                                        style="color:black;text-align:center"),
+                                      width=8,style="background-color:papayawhip;border-radius: 10px")
+                           ),
+                           hr(),
+                           tags$style(".fa-chart-pie {color:#E87722}"),
+                           h3(p(em("Graphical tests "),icon("chart-pie",lib = "font-awesome"),style="color:black;text-align:center")),
+                           tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: coral; border-top: 1px coral; border-bottom: 1px coral;border-left: 1px coral}")),
+                           tags$style(HTML(".js-irs-0 .irs-max, .js-irs-0 .irs-min {background:papayawhip}")),
+                           
+                           br(),
+                           sidebarLayout(
+                             sidebarPanel(
+                               
+                               sliderInput("power_transform",
+                                           p("Try different power transformations to test if normality could be achieved:", 
+                                             em(TARGET_COL),
+                                             style="color:black;text-align:center"),
+                                           value=1,
+                                           min=-3,
+                                           max=5,
+                                           step=0.1),
+                               br(),
+                               
+                               
+                             ),
+                             mainPanel(
+                               
+                               fluidRow(
+                                 column(br(),plotOutput("hist_target"),br(),width=4,style="border:1px solid black"),
+                                 column(br(),plotOutput("box_target"),br(),width=4,style="border: 1px solid black;border-left: none"),
+                                 column(br(),plotOutput("qqp_target"),br(),width=4,style="border:1px solid black;border-left:none")
+                                 
+                               )
+                             )),
+                           hr(),
+                           tags$style(".glyphicon-folder-open {color:#E87722}"),
+                           h3(p(em("Analytical tests"),icon("folder-open",lib = "glyphicon"),style="color:black;text-align:center")),
+                           br(),
+                           sidebarLayout(
+                             
+                             sidebarPanel(
+                               
+                               selectInput("name_analytics_test",
+                                           p("Please select the test you want to try:",
+                                             style="color:black; text-align:center"),
+                                           choices=c("Shapiro-Wilk"=1,
+                                                     "Anderson-Darling"=2,
+                                                     "Cramér-von Mises"=3,
+                                                     "Kolmogorov-Smirnov"=4,
+                                                     "Jarque-Bera"=5)),
+                               uiOutput("ReadMore")
+                             ),
+                             mainPanel(
+                               
+                               fluidRow(
+                                 
+                                 tags$head(tags$style("#norm_conclusion{color: navy;
+                                                      font-size: 15px;
+                                                             font-style: italic;
+                                                             font-weight: bold;
+                                                             text-align: center
+                                                             }")),
+                                 tags$head(tags$style("#ana_test_results{height: 155px; border: 1px solid black; background-color: lavender}")),
+                                 column(verbatimTextOutput("ana_test_results"),
+                                        br(),width = 6),
+                                 column(br(),
+                                        p("We accept the NULL Hypothesis if we get a p-value greater than 0.05 (for a confidence level of 95%), so:",
+                                          style="color:black"),
+                                        br(),
+                                        textOutput("norm_conclusion"),
+                                        br(),
+                                        width = 6,
+                                        style="background-color:lavender;border-left:8px solid blue"
+                                        )
+                                 
+                               )
+                             ))
+)
+
+
 # Page 1 - Introduction ----------------------------------------------
 intro_panel = tabPanel(
-  "Introduction",
+  icon("home"),
   
   titlePanel("Airbnb prices in the European cities"),
   
@@ -81,7 +190,7 @@ intro_panel = tabPanel(
 
 # Page 2 - Algorithm -------------------------------------------
 
-second_panel = tabPanel(
+algo_panel = tabPanel(
   
   "Algorithm",
   
@@ -132,7 +241,7 @@ airbnb_main = mainPanel(
   plotOutput("plot")
 )
 
-third_panel = tabPanel(
+visualization_panel = tabPanel(
   
   "Visualization",
   
@@ -153,9 +262,10 @@ ui = fluidPage(theme = shinytheme("cerulean"),
                
                navbarPage(
                  "Let's begin",
-                 airbnb_table,
                  intro_panel,
-                 second_panel,
-                 third_panel
+                 airbnb_table,
+                 normality_panel,
+                 visualization_panel,
+                 algo_panel
                  )
 )

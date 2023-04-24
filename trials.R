@@ -1,6 +1,22 @@
 
 df_airbnb = read.csv("data/airbnb_europe_cities.csv")
 
+TARGET_COL = "price"
+list_target = df_airbnb[, TARGET_COL]
+typeof(list_target)
+list_target
+
+attach(df_airbnb)
+typeof(price)
+
+log_target = log(list_target)
+
+title = "price X"
+Resultado <- cbind(log_target, title)
+Resultado[,1]
+prueba <- shapiro.test(as.double(Resultado[,1][seq_along(remove) %% 2 > 0][1:5000]))
+prueba
+
 cond_price_lte_1000 = df_airbnb$price <= 1000
 df_airbnb = df_airbnb[cond_price_lte_1000, ]
 
